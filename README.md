@@ -15,6 +15,7 @@ A beautiful and customizable drag slider widget with animated wave trail effect 
 
 ### LTR (Left-to-Right)
 ![LTR Example](assets/ltr_example.png)
+![LTR Example](assets/ltr_example.gif)
 
 ### RTL (Right-to-Left)
 ![RTL Example](assets/rtl_example.png)
