@@ -11,6 +11,14 @@ A beautiful and customizable drag slider widget with animated wave trail effect 
 - **Smooth Animations**: Fluid animations with configurable thresholds
 - **Zero Dependencies**: Only depends on Flutter SDK
 
+## Screenshots
+
+### LTR (Left-to-Right)
+![LTR Example](assets/ltr_example.png)
+
+### RTL (Right-to-Left)
+![RTL Example](assets/rtl_example.png)
+
 ## Installation
 
 Add this to your package's `pubspec.yaml` file:
@@ -86,7 +94,3 @@ See the `/example` directory for a complete demo app showcasing various configur
 ## License
 
 MIT License - see LICENSE file for details.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
