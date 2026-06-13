@@ -1,6 +1,6 @@
 name: drag_wave_slider
 description: "A customizable drag slider with beautiful wave animation effect for Flutter apps. Perfect for slide-to-action interactions with animated wave trails."
-version: 0.0.1
+version: 0.1.0
 homepage: https://github.com/mohammedghandor23/drag_wave_slider
 repository: https://github.com/mohammedghandor23/drag_wave_slider
 

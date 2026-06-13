@@ -5,10 +5,14 @@ A beautiful and customizable drag slider widget with animated wave trail effect 
 ## Features
 
 - **Animated Wave Trail**: Beautiful wave animation that follows the slider thumb
-- **Fully Customizable**: Configure colors, text, height, wave amplitude, and animation duration
+- **Live Progress Callback**: React in real-time to drag position via `onSlideChange`
+- **Reset Control**: Choose whether the thumb snaps back or stays at the end after completion
+- **Enable / Disable**: Fully disable interaction with a greyed-out visual state
+- **Custom Thumb Widget**: Use any Flutter widget as the slider thumb
+- **Custom Label Widget**: Use any Flutter widget as the slider label
+- **Thumb Gradient**: Apply a gradient fill to the thumb instead of a flat color
 - **RTL Support**: Works seamlessly with right-to-left layouts
-- **Custom Icons**: Add custom icons to the slider thumb
-- **Smooth Animations**: Fluid animations with configurable thresholds
+- **Smooth Performance**: Wave path uses Bézier curves instead of per-pixel rendering
 - **Zero Dependencies**: Only depends on Flutter SDK
 
 ## Screenshots
@@ -26,48 +30,128 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  drag_wave_slider: ^0.0.1
+  drag_wave_slider: ^0.1.0
 ```
 
 ## Usage
 
 ```dart
 import 'package:drag_wave_slider/drag_wave_slider.dart';
+```
 
-// Basic usage
+### Basic
+
+```dart
 DragWaveSlider(
   text: 'Slide to Unlock',
   sliderColor: Colors.blue,
   backgroundColor: Colors.grey,
   textColor: Colors.white,
   onSlideComplete: () {
-    // Handle slide completion
-    print('Slider completed!');
+    print('Unlocked!');
   },
 )
+```
 
-// With custom icon
+### Live progress with `onSlideChange`
+
+```dart
 DragWaveSlider(
-  text: 'Slide to Delete',
-  sliderColor: Colors.red,
-  backgroundColor: Colors.red.shade100,
-  textColor: Colors.red.shade800,
-  thumbIcon: Icons.delete,
-  thumbIconColor: Colors.white,
-  onSlideComplete: () {
-    // Handle deletion
+  text: 'Drag me',
+  sliderColor: Colors.orange,
+  onSlideComplete: () {},
+  onSlideChange: (double value) {
+    // value is 0.0 – 1.0
+    print('Progress: ${(value * 100).toStringAsFixed(1)}%');
   },
 )
+```
 
-// RTL support
+### Keep thumb at end (`resetOnComplete: false`)
+
+```dart
+DragWaveSlider(
+  text: 'Slide to Confirm',
+  sliderColor: Colors.green,
+  resetOnComplete: false,
+  onSlideComplete: () {
+    // thumb stays at the end position
+  },
+)
+```
+
+### Disabled state
+
+```dart
+DragWaveSlider(
+  text: 'Unavailable',
+  enabled: false,
+  onSlideComplete: () {},
+)
+```
+
+### Thumb gradient
+
+```dart
+DragWaveSlider(
+  text: 'Slide to Pay',
+  sliderColor: Colors.teal,
+  thumbIcon: Icons.payment,
+  thumbGradient: LinearGradient(
+    colors: [Colors.teal, Colors.cyan],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  ),
+  onSlideComplete: () {},
+)
+```
+
+### Custom thumb widget
+
+```dart
+DragWaveSlider(
+  text: 'Custom Thumb',
+  sliderColor: Colors.deepPurple,
+  thumbWidget: Container(
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      gradient: LinearGradient(
+        colors: [Colors.deepPurple, Colors.pink],
+      ),
+    ),
+    child: Icon(Icons.star, color: Colors.white),
+  ),
+  onSlideComplete: () {},
+)
+```
+
+### Custom label widget
+
+```dart
+DragWaveSlider(
+  textWidget: Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(Icons.lock_open, size: 16, color: Colors.green),
+      SizedBox(width: 6),
+      Text('SLIDE TO UNLOCK',
+          style: TextStyle(color: Colors.green, letterSpacing: 1.5)),
+    ],
+  ),
+  sliderColor: Colors.green,
+  onSlideComplete: () {},
+)
+```
+
+### RTL support
+
+```dart
 Directionality(
   textDirection: TextDirection.rtl,
   child: DragWaveSlider(
     text: 'اسحب للفتح',
     sliderColor: Colors.purple,
-    onSlideComplete: () {
-      // Handle completion
-    },
+    onSlideComplete: () {},
   ),
 )
 ```
@@ -76,21 +160,27 @@ Directionality(
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `text` | `String` | required | Text displayed in the slider |
+| `text` | `String?` | — | Text label (required if `textWidget` is not set) |
+| `textWidget` | `Widget?` | `null` | Custom widget label (overrides `text`) |
 | `onSlideComplete` | `VoidCallback` | required | Callback when slider reaches threshold |
-| `sliderColor` | `Color` | `Colors.blue` | Color of slider thumb and wave |
-| `backgroundColor` | `Color` | `Colors.grey` | Background color of slider track |
-| `textColor` | `Color` | `Colors.white` | Color of the text |
+| `onSlideChange` | `ValueChanged<double>?` | `null` | Fires continuously with drag progress (0.0–1.0) |
+| `resetOnComplete` | `bool` | `true` | Whether the thumb resets to start after completion |
+| `enabled` | `bool` | `true` | Whether the slider accepts user interaction |
+| `sliderColor` | `Color` | `Colors.blue` | Color of slider thumb and wave trail |
+| `thumbGradient` | `Gradient?` | `null` | Gradient fill for the thumb (overrides `sliderColor` on thumb) |
+| `thumbWidget` | `Widget?` | `null` | Fully custom thumb widget (overrides `thumbIcon`) |
+| `thumbIcon` | `IconData?` | `null` | Icon displayed inside the thumb |
+| `thumbIconColor` | `Color?` | `null` | Color of the thumb icon |
+| `backgroundColor` | `Color` | `Colors.grey` | Background color of the slider track |
+| `textColor` | `Color` | `Colors.white` | Color of the text label |
 | `height` | `double` | `60` | Height of the slider |
-| `waveAmplitude` | `double` | `3.0` | Amplitude of wave animation |
-| `waveDuration` | `Duration` | `1500ms` | Duration of wave animation cycle |
-| `slideThreshold` | `double` | `0.9` | Threshold (0.0-1.0) to trigger callback |
-| `thumbIcon` | `IconData?` | `null` | Optional custom icon for thumb |
-| `thumbIconColor` | `Color?` | `null` | Color for thumb icon |
+| `waveAmplitude` | `double` | `3.0` | Amplitude of the wave animation |
+| `waveDuration` | `Duration` | `1500ms` | Duration of one wave animation cycle |
+| `slideThreshold` | `double` | `0.9` | Drag fraction (0.0–1.0) that triggers `onSlideComplete` |
 
 ## Example
 
-See the `/example` directory for a complete demo app showcasing various configurations.
+See the `/example` directory for a complete demo app showcasing all configurations.
 
 ## License
 
